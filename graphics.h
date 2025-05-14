@@ -55,6 +55,9 @@ class Graphics
     GLint m_colorAttrib;
     GLint m_tcAttrib;
     GLint m_hasTexture;
+    GLint m_isEmissive; 
+    GLint m_lightPos; 
+    GLint m_lightColor; 
 
     float MPI = 3.14159265358979323846;
 

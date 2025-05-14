@@ -33,6 +33,12 @@ Sphere::Sphere(int prec, const char* fname) { // prec is precision, or number of
         hasTex = false;
 }
 
+void Sphere::SetLighting(glm::vec3 lightPosition, glm::vec3 lightCol, bool emissive) {
+    lightPos = lightPosition;
+    lightColor = lightCol;
+    isEmissive = emissive;
+}
+
 
 void Sphere::Render(GLint positionAttribLoc, GLint colorAttribLoc)
 {
@@ -96,6 +102,60 @@ void Sphere::Render(GLint posAttribLoc, GLint colAttribLoc, GLint tcAttribLoc, G
     glDisableVertexAttribArray(tcAttribLoc);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void Sphere::Render(GLint posAttribLoc, GLint normalAttribLoc, GLint tcAttribLoc, GLint hasTextureLoc, GLint lightPosLoc, GLint lightColorLoc, GLint isEmissiveLoc){
+   glBindVertexArray(vao);
+   // Enable vertex attibute arrays for each vertex attrib
+   glEnableVertexAttribArray(posAttribLoc);
+   glEnableVertexAttribArray(normalAttribLoc);
+   glEnableVertexAttribArray(tcAttribLoc);
+
+
+   // Bind your VBO
+   glBindBuffer(GL_ARRAY_BUFFER, VB);
+
+
+   // Set vertex attribute pointers to the load correct data. Update here to load the correct attributes.
+   glVertexAttribPointer(posAttribLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, vertex));
+   glVertexAttribPointer(normalAttribLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+   glVertexAttribPointer(tcAttribLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texcoord));
+
+
+   // If has texture, set up texture unit(s): update here for texture rendering
+   if (m_texture != NULL) {
+       glUniform1i(hasTextureLoc, true);
+       m_texture->bind();
+   }
+   else glUniform1i(hasTextureLoc, false);
+
+
+   glUniform1i(isEmissiveLoc, isEmissive);
+   glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
+   glUniform3fv(lightColorLoc, 1, glm::value_ptr(lightColor));
+
+
+
+
+
+
+   // Bind your Element Array
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+
+
+   // Render
+   glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+
+
+   // Disable vertex arrays
+   glDisableVertexAttribArray(posAttribLoc);
+   glDisableVertexAttribArray(normalAttribLoc);
+   glDisableVertexAttribArray(tcAttribLoc);
+
+
+   m_texture->unbind();
+   glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 
 
 void Sphere::setupVertices() {

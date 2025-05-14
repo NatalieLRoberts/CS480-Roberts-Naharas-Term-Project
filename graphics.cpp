@@ -375,6 +375,7 @@ void Graphics::Render()
 	// Send in the projection and view to the shader (stay the same while camera intrinsic(perspective) and extrinsic (view) parameters are the same
 	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));
 	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetView()));
+	glm::vec3 sunWorldPos = glm::vec3(m_sun->GetModel()[3]);  // sun's position for emissive lighting
 
 
 
@@ -418,7 +419,9 @@ void Graphics::Render()
 			}
 			glUniform1i(sampler, 0);
 			glUniform1i(m_hasTexture, true);
-			m_sphere->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, true); //true only for sun
+			m_venus->SetLighting(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), true);
+			m_sphere->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -434,7 +437,9 @@ void Graphics::Render()
 			}
 			glUniform1i(sampler, 0);
 			glUniform1i(m_hasTexture, true);
-			m_sphere2->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_sphere2->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_sphere2->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -452,7 +457,9 @@ void Graphics::Render()
 			}
 			glUniform1i(sampler, 0);
 			glUniform1i(m_hasTexture, true);
-			m_sphere3->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_sphere3->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_sphere3->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -467,7 +474,9 @@ void Graphics::Render()
 				glUniform1i(sampler, 0);
 			}
 			glUniform1i(m_hasTexture, true);
-			m_mercury->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_mercury->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_mercury->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -482,7 +491,9 @@ void Graphics::Render()
 				glUniform1i(sampler, 0);
 			}
 			glUniform1i(m_hasTexture, true);
-			m_venus->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_venus->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_venus->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -497,7 +508,9 @@ void Graphics::Render()
 				glUniform1i(sampler, 0);
 			}
 			glUniform1i(m_hasTexture, true);
-			m_mars->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_mars->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_mars->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -512,7 +525,9 @@ void Graphics::Render()
 				glUniform1i(sampler, 0);
 			}
 			glUniform1i(m_hasTexture, true);
-			m_jupiter->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_jupiter->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_jupiter->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 	}
 
@@ -527,7 +542,9 @@ void Graphics::Render()
 				glUniform1i(sampler, 0);
 			}
 			glUniform1i(m_hasTexture, true);
-			m_saturn->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+			glUniform1i(m_isEmissive, false); //false for everything but sun
+			m_saturn->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+			m_saturn->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 		}
 		// === Saturn's Ring Rendering ===
 		if (m_saturn && m_saturnRingTexture) {
@@ -568,7 +585,9 @@ void Graphics::Render()
 					glUniform1i(sampler, 0);
 				}
 				glUniform1i(m_hasTexture, true);
-				m_uranus->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+				glUniform1i(m_isEmissive, false); //false for everything but sun
+				m_uranus->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+				m_uranus->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 			}
 		}
 
@@ -583,7 +602,9 @@ void Graphics::Render()
 					glUniform1i(sampler, 0);
 				}
 				glUniform1i(m_hasTexture, true);
-				m_neptune->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture);
+				glUniform1i(m_isEmissive, false); //false for everything but sun
+				m_neptune->SetLighting(sunWorldPos, glm::vec3(1, 1, 1), false);
+				m_neptune->Render(m_positionAttrib, m_colorAttrib, m_tcAttrib, m_hasTexture, m_lightPos, m_lightColor, m_isEmissive);
 			}
 		}
 
@@ -660,6 +681,27 @@ void Graphics::Render()
 			printf("hasTexture uniform not found\n");
 			anyProblem = false;
 		}
+
+		m_isEmissive = m_shader->GetUniformLocation("is_emissive");
+   		if (m_isEmissive == INVALID_UNIFORM_LOCATION) {
+       		printf("isEmissive uniform not found\n");
+       		anyProblem = false;
+   		}
+
+
+   		m_lightPos = m_shader->GetUniformLocation("lightPos");
+   		if (m_lightPos == INVALID_UNIFORM_LOCATION) {
+       		printf("lightPos uniform not found\n");
+       		anyProblem = false;
+   		}
+
+
+   		m_lightColor = m_shader->GetUniformLocation("lightColor");
+   		if (m_lightColor == INVALID_UNIFORM_LOCATION) {
+       		printf("lightColor uniform not found\n");
+       		anyProblem = false;
+   		}
+
 
 		return anyProblem;
 	}

@@ -47,6 +47,7 @@ bool Shader::AddShader(GLenum ShaderType)
              \
           out vec3 color; \
           out vec2 tc;\
+          out vec3 fragPos; \
           \
           uniform mat4 projectionMatrix; \
           uniform mat4 viewMatrix; \
@@ -60,6 +61,7 @@ bool Shader::AddShader(GLenum ShaderType)
             gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * v; \
             color = v_color; \
             tc = v_tc;\
+            fragPos = vec3(modelMatrix * v); \
           } \
           ";
   }

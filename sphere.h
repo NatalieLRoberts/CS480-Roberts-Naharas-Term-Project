@@ -7,9 +7,11 @@ class Sphere :
 public:
     Sphere();
 
+    void SetLighting(glm::vec3 lightPosition, glm::vec3 lightCol, bool emissive);
 
     void Render(GLint positionAttribLoc, GLint colorAttribLoc);
     void Render(GLint positionAttribLoc, GLint colorAttribLoc, GLint tcAttribLoc, GLint hasTex);
+    void Render(GLint positionAttribLoc, GLint colorAttribLoc, GLint tcAttribLoc, GLint hasTex, GLint lightPosLoc, GLint lightColorLoc, GLint isEmissiveLoc);
 
     glm::mat4 GetModel() { return model; }
     void Update(glm::mat4 matModel);
@@ -43,6 +45,9 @@ public:
 private:
     glm::vec3 pivotLocation;
     glm::mat4 model;
+    glm::vec3 lightPos; 
+    glm::vec3 lightColor; 
+    bool isEmissive;
     std::vector<Vertex> Vertices;
     std::vector<unsigned int> Indices;
     GLuint VB;
