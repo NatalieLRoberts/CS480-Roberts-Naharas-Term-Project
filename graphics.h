@@ -11,6 +11,8 @@ using namespace std;
 #include "object.h"
 #include "sphere.h"
 #include "mesh.h"
+#include "skybox.h"
+#include"comet.h"
 
 #define numVBOs 2;
 #define numIBs 2;
@@ -22,8 +24,14 @@ class Graphics
     Graphics();
     ~Graphics();
     bool Initialize(int width, int height);
+    void InitSaturnRing();
     void HierarchicalUpdate2(double dt);
     void Render();
+
+    void SetCamera(Camera* camera);
+
+    GLuint m_ringVAO, m_ringVBO, m_ringTBO;
+    int m_ringVertexCount = 0;
 
     Camera* getCamera() { return m_camera; }
 
@@ -37,7 +45,7 @@ class Graphics
 
     stack<glm::mat4> modelStack;
 
-    Camera *m_camera;
+    Camera *m_camera = nullptr;
     Shader *m_shader;
 
     GLint m_projectionMatrix;
@@ -48,6 +56,7 @@ class Graphics
     GLint m_tcAttrib;
     GLint m_hasTexture;
 
+    float MPI = 3.14159265358979323846;
 
     Sphere* m_sphere;
     Sphere* m_sphere2;
@@ -63,7 +72,12 @@ class Graphics
 
     Mesh* m_mesh;
 
- 
+    Skybox* m_skybox;
+
+    Comet* m_halley;
+
+    Texture* m_saturnRingTexture = nullptr; // Add this to hold the texture object
+    GLuint m_saturnRingTextureID;
 
 };
 
